@@ -1,0 +1,28 @@
+{
+  "_class_name": "StableDiffusionImageEmbedPipeline",
+  "_diffusers_version": "0.4.0.dev0",
+  "feature_extractor": [
+    "transformers",
+    "CLIPFeatureExtractor"
+  ],
+  "image_encoder": [
+    "transformers",
+    "CLIPModel"
+  ],
+  "safety_checker": [
+    "stable_diffusion",
+    "StableDiffusionSafetyChecker"
+  ],
+  "scheduler": [
+    "diffusers",
+    "PNDMScheduler"
+  ],
+  "unet": [
+    "diffusers",
+    "UNet2DConditionModel"
+  ],
+  "vae": [
+    "diffusers",
+    "AutoencoderKL"
+  ]
+}
