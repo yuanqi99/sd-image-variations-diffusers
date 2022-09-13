@@ -13,6 +13,8 @@ tags:
 
 This version of Stable Diffusion has been fine tuned from [CompVis/stable-diffusion-v1-3-original](https://huggingface.co/CompVis/stable-diffusion-v-1-3-original) to accept CLIP image embedding rather than text embeddings. This allows the creation of "image variations" similar to DALLE-2 using Stable Diffusion. This version of the weights has been ported to huggingface Diffusers, to use this with the Diffusers library requires the [Lambda Diffusers repo](https://github.com/LambdaLabsML/lambda-diffusers).
 
+![](https://raw.githubusercontent.com/justinpinkney/stable-diffusion/main/assets/im-vars-thin.jpg)
+
 ## Example
 
 First clone [Lambda Diffusers](https://github.com/LambdaLabsML/lambda-diffusers) and install any requirements (in a virtual environment in the example below):
