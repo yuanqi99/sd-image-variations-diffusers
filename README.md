@@ -68,7 +68,7 @@ This model is fine tuned from Stable Diffusion v1-3 where the text encoder has b
 - **Batch:** 6 x 4 = 24
 - **Learning rate:** warmup to 0.0001 for 1,000 steps and then kept constant
 
-Training was done using a [modified version of the original Stable Diffusion training code]((https://github.com/justinpinkney/stable-diffusion)
+Training was done using a [modified version of the original Stable Diffusion training code]((https://github.com/justinpinkney/stable-diffusion), the original version of the weights is [here](https://huggingface.co/lambdalabs/stable-diffusion-image-conditioned).
 
 
 # Uses
@@ -139,18 +139,5 @@ The concepts are intentionally hidden to reduce the likelihood of reverse-engine
 Specifically, the checker compares the class probability of harmful concepts in the embedding space of the `CLIPModel` *after generation* of the images. 
 The concepts are passed into the model with the generated image and compared to a hand-engineered weight for each NSFW concept.
 
-
-## Citation
-
-```bibtex
-    @InProceedings{Rombach_2022_CVPR,
-        author    = {Rombach, Robin and Blattmann, Andreas and Lorenz, Dominik and Esser, Patrick and Ommer, Bj\"orn},
-        title     = {High-Resolution Image Synthesis With Latent Diffusion Models},
-        booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
-        month     = {June},
-        year      = {2022},
-        pages     = {10684-10695}
-    }
-```
 
 *This model card was written by: Justin Pinkney and is based on the [Stable Diffusion model card](https://huggingface.co/CompVis/stable-diffusion-v1-4).*
