@@ -6,5 +6,6 @@
   "beta_start": 0.00085,
   "num_train_timesteps": 1000,
   "skip_prk_steps": true,
-  "trained_betas": null
+  "trained_betas": null,
+  "steps_offset": 1
 }
