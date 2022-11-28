@@ -1,6 +1,7 @@
 {
   "_class_name": "UNet2DConditionModel",
-  "_diffusers_version": "0.4.0.dev0",
+  "_diffusers_version": "0.8.0.dev0",
+  "_name_or_path": "./lambdalabs/sd-image-variations-diffusers/unet",
   "act_fn": "silu",
   "attention_head_dim": 8,
   "block_out_channels": [

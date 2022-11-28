@@ -1,13 +1,13 @@
 {
-  "_class_name": "StableDiffusionImageEmbedPipeline",
-  "_diffusers_version": "0.4.0.dev0",
+  "_class_name": "StableDiffusionImageVariationPipeline",
+  "_diffusers_version": "0.8.0.dev0",
   "feature_extractor": [
     "transformers",
-    "CLIPFeatureExtractor"
+    "CLIPImageProcessor"
   ],
   "image_encoder": [
     "transformers",
-    "CLIPModel"
+    "CLIPVisionModelWithProjection"
   ],
   "safety_checker": [
     "stable_diffusion",
