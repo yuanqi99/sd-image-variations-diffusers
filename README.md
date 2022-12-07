@@ -12,7 +12,10 @@ tags:
 # Stable Diffusion Image Variations Model Card
 
 📣 V2 model released, and blurriness issues fixed! 📣
+
 🧨🎉 Image Variations is now natively supported in 🤗 Diffusers! 🎉🧨
+
+![](https://raw.githubusercontent.com/justinpinkney/stable-diffusion/main/assets/im-vars-thin.jpg)
 
 ## Version 2
 
@@ -20,7 +23,8 @@ This version of Stable Diffusion has been fine tuned from [CompVis/stable-diffus
 
 This model was trained in two stages and longer than the original variations model and gives better image quality and better CLIP rated similarity compared to the original version
 
-![](https://raw.githubusercontent.com/justinpinkney/stable-diffusion/main/assets/im-vars-thin.jpg)
+See training details and v1 vs v2 comparison below.
+
 
 ## Example
 
