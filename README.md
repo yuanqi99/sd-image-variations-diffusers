@@ -28,7 +28,7 @@ from PIL import Image
 device = "cuda:0"
 sd_pipe = StableDiffusionImageVariationPipeline.from_pretrained("lambdalabs/sd-image-variations-diffusers")
 sd_pipe = sd_pipe.to(device)
-out = sd_pipe(image=Image.open("path/to/image.jpg"))
+out = sd_pipe(image=Image.open("path/to/image.jpg"), guidance_scale=3)
 out["images"][0].save("result.jpg")
 ```
 
