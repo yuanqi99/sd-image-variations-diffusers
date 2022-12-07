@@ -1,6 +1,6 @@
 {
   "_class_name": "StableDiffusionImageVariationPipeline",
-  "_diffusers_version": "0.8.0.dev0",
+  "_diffusers_version": "0.9.0",
   "feature_extractor": [
     "transformers",
     "CLIPImageProcessor"
@@ -9,6 +9,7 @@
     "transformers",
     "CLIPVisionModelWithProjection"
   ],
+  "requires_safety_checker": true,
   "safety_checker": [
     "stable_diffusion",
     "StableDiffusionSafetyChecker"

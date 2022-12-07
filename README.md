@@ -11,9 +11,14 @@ tags:
 
 # Stable Diffusion Image Variations Model Card
 
+📣 V2 model released, and blurriness issues fixed! 📣
 🧨🎉 Image Variations is now natively supported in 🤗 Diffusers! 🎉🧨
 
-This version of Stable Diffusion has been fine tuned from [CompVis/stable-diffusion-v1-3-original](https://huggingface.co/CompVis/stable-diffusion-v-1-3-original) to accept CLIP image embedding rather than text embeddings. This allows the creation of "image variations" similar to DALLE-2 using Stable Diffusion. This version of the weights has been ported to huggingface Diffusers, to use this with the Diffusers library requires the [Lambda Diffusers repo](https://github.com/LambdaLabsML/lambda-diffusers).
+## Version 2
+
+This version of Stable Diffusion has been fine tuned from [CompVis/stable-diffusion-v1-4-original](https://huggingface.co/CompVis/stable-diffusion-v-1-4-original) to accept CLIP image embedding rather than text embeddings. This allows the creation of "image variations" similar to DALLE-2 using Stable Diffusion. This version of the weights has been ported to huggingface Diffusers, to use this with the Diffusers library requires the [Lambda Diffusers repo](https://github.com/LambdaLabsML/lambda-diffusers).
+
+This model was trained in two stages and longer than the original variations model and gives better image quality and better CLIP rated similarity compared to the original version
 
 ![](https://raw.githubusercontent.com/justinpinkney/stable-diffusion/main/assets/im-vars-thin.jpg)
 
@@ -26,36 +31,85 @@ from diffusers import StableDiffusionImageVariationPipeline
 from PIL import Image
 
 device = "cuda:0"
-sd_pipe = StableDiffusionImageVariationPipeline.from_pretrained("lambdalabs/sd-image-variations-diffusers")
+sd_pipe = StableDiffusionImageVariationPipeline.from_pretrained(
+  "lambdalabs/sd-image-variations-diffusers",
+  revision="v2.0",
+  )
 sd_pipe = sd_pipe.to(device)
-out = sd_pipe(image=Image.open("path/to/image.jpg"), guidance_scale=3)
+
+im = Image.open("path/to/image.jpg")
+tform = transforms.Compose([
+    transforms.ToTensor(),
+    transforms.Resize(
+        (224, 224),
+        interpolation=transforms.InterpolationMode.BICUBIC,
+        antialias=False,
+        ),
+    transforms.Normalize(
+      [0.48145466, 0.4578275, 0.40821073],
+      [0.26862954, 0.26130258, 0.27577711]),
+])
+inp = tform(im).to(device)
+
+out = sd_pipe(inp, guidance_scale=3)
 out["images"][0].save("result.jpg")
 ```
 
+### The importance of resizing correctly... (or not)
+
+Note that due a bit of an oversight during training, the model expects resized images without anti-aliasing. This turns out to make a big difference and is important to do the resizing the same way during inference. When passing a PIL image to the Diffusers pipeline antialiasing will be applied during resize, so it's better to input a tensor which you have prepared manually according to the transfrom in the example above!
+
+Here are examples of images generated without (top) and with (bottom) anti-aliasing during resize. (Input is [this image](https://github.com/SHI-Labs/Versatile-Diffusion/blob/master/assets/ghibli.jpg))
+
+![](alias-montage.jpg)
+
+![](default-montage.jpg)
+
+### V1 vs V2
+
+Here's an example of V1 vs V2, version two was trained more carefully and for longer, see the details below. V2-top vs V1-bottom
+
+![](v2-montage.jpg)
+
+![](v1-montage.jpg)
+
+Input images:
+
+![](inputs.jpg)
+
+One important thing to note is that due to the longer training V2 appears to have memorised some common images from the training data, e.g. now the previous example of the Girl with a Pearl Earring almosts perfectly reproduce the original rather than creating variations. You can always use v1 by specifiying `revision="v1.0"`.
+
+v2 output for girl with a pearl earing as input (guidance scale=3)
+
+![](earring.jpg)
+
 # Training
 
-**Training Data**
-The model developers used the following dataset for training the model:
-
-- LAION-2B (en) and subsets thereof (see next section)
 
 **Training Procedure**
-This model is fine tuned from Stable Diffusion v1-3 where the text encoder has been replaced with an image encoder. The training procedure is the same as for Stable Diffusion except for the fact that images are encoded through a ViT-L/14 image-encoder including the final projection layer to the CLIP shared embedding space.
+This model is fine tuned from Stable Diffusion v1-3 where the text encoder has been replaced with an image encoder. The training procedure is the same as for Stable Diffusion except for the fact that images are encoded through a ViT-L/14 image-encoder including the final projection layer to the CLIP shared embedding space. The model was trained on LAION improved aesthetics 6plus.
 
-- **Hardware:** 4 x A6000 GPUs (provided by [Lambda GPU Cloud](https://lambdalabs.com/service/gpu-cloud))
+- **Hardware:** 8 x A100-40GB GPUs (provided by [Lambda GPU Cloud](https://lambdalabs.com/service/gpu-cloud))
 - **Optimizer:** AdamW
-- **Gradient Accumulations**: 1
-- **Steps**: 87,000
-- **Batch:** 6 x 4 = 24
-- **Learning rate:** warmup to 0.0001 for 1,000 steps and then kept constant
 
-Training was done using a [modified version of the original Stable Diffusion training code]((https://github.com/justinpinkney/stable-diffusion), the original version of the weights is [here](https://huggingface.co/lambdalabs/stable-diffusion-image-conditioned).
+- **Stage 1** - Fine tune only CrossAttention layer weights from Stable Diffusion v1.4 model
+  - **Steps**: 46,000
+  - **Batch:** batch size=4, GPUs=8, Gradient Accumulations=4. Total batch size=128
+  - **Learning rate:** warmup to 1e-5 for 10,000 steps and then kept constant
+
+- **Stage 2** - Resume from Stage 1 training the whole unet
+  - **Steps**: 50,000
+  - **Batch:** batch size=4, GPUs=8, Gradient Accumulations=5. Total batch size=160
+  - **Learning rate:** warmup to 1e-5 for 5,000 steps and then kept constant
+
+
+Training was done using a [modified version of the original Stable Diffusion training code]((https://github.com/justinpinkney/stable-diffusion).
 
 
 # Uses
 _The following section is adapted from the [Stable Diffusion model card](https://huggingface.co/CompVis/stable-diffusion-v1-4)_
 
-## Direct Use 
+## Direct Use
 The model is intended for research purposes only. Possible research areas and
 tasks include
 
@@ -105,25 +159,25 @@ Using the model to generate content that is cruel to individuals is a misuse of 
 
 ### Bias
 
-While the capabilities of image generation models are impressive, they can also reinforce or exacerbate social biases. 
-Stable Diffusion v1 was trained on subsets of [LAION-2B(en)](https://laion.ai/blog/laion-5b/), 
-which consists of images that are primarily limited to English descriptions. 
-Texts and images from communities and cultures that use other languages are likely to be insufficiently accounted for. 
-This affects the overall output of the model, as white and western cultures are often set as the default. Further, the 
+While the capabilities of image generation models are impressive, they can also reinforce or exacerbate social biases.
+Stable Diffusion v1 was trained on subsets of [LAION-2B(en)](https://laion.ai/blog/laion-5b/),
+which consists of images that are primarily limited to English descriptions.
+Texts and images from communities and cultures that use other languages are likely to be insufficiently accounted for.
+This affects the overall output of the model, as white and western cultures are often set as the default. Further, the
 ability of the model to generate content with non-English prompts is significantly worse than with English-language prompts.
 
 ### Safety Module
 
-The intended use of this model is with the [Safety Checker](https://github.com/huggingface/diffusers/blob/main/src/diffusers/pipelines/stable_diffusion/safety_checker.py) in Diffusers. 
+The intended use of this model is with the [Safety Checker](https://github.com/huggingface/diffusers/blob/main/src/diffusers/pipelines/stable_diffusion/safety_checker.py) in Diffusers.
 This checker works by checking model outputs against known hard-coded NSFW concepts.
 The concepts are intentionally hidden to reduce the likelihood of reverse-engineering this filter.
-Specifically, the checker compares the class probability of harmful concepts in the embedding space of the `CLIPModel` *after generation* of the images. 
+Specifically, the checker compares the class probability of harmful concepts in the embedding space of the `CLIPModel` *after generation* of the images.
 The concepts are passed into the model with the generated image and compared to a hand-engineered weight for each NSFW concept.
 
 
 ## Old instructions
 
-If you are using a diffusers version <0.8.0 there is no `StableDiffusionImageVariationPipeline`, 
+If you are using a diffusers version <0.8.0 there is no `StableDiffusionImageVariationPipeline`,
 in this case you need to use an older revision (`2ddbd90b14bc5892c19925b15185e561bc8e5d0a`) in conjunction with the lambda-diffusers repo:
 
 

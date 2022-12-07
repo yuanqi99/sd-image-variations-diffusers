@@ -1,6 +1,6 @@
 {
-  "_commit_hash": null,
-  "_name_or_path": "./lambdalabs/sd-image-variations-diffusers/safety_checker",
+  "_commit_hash": "ca6f97f838ae1b5bf764f31363a21f388f4d8f3e",
+  "_name_or_path": "/home/jpinkney/.cache/huggingface/diffusers/models--lambdalabs--sd-image-variations-diffusers/snapshots/ca6f97f838ae1b5bf764f31363a21f388f4d8f3e/safety_checker",
   "architectures": [
     "StableDiffusionSafetyChecker"
   ],
@@ -80,7 +80,7 @@
     "top_p": 1.0,
     "torch_dtype": null,
     "torchscript": false,
-    "transformers_version": "4.25.0.dev0",
+    "transformers_version": "4.25.1",
     "typical_p": 1.0,
     "use_bfloat16": false,
     "vocab_size": 49408
@@ -167,7 +167,7 @@
     "top_p": 1.0,
     "torch_dtype": null,
     "torchscript": false,
-    "transformers_version": "4.25.0.dev0",
+    "transformers_version": "4.25.1",
     "typical_p": 1.0,
     "use_bfloat16": false
   },
