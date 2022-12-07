@@ -11,45 +11,26 @@ tags:
 
 # Stable Diffusion Image Variations Model Card
 
+🧨🎉 Image Variations is now natively supported in 🤗 Diffusers! 🎉🧨
+
 This version of Stable Diffusion has been fine tuned from [CompVis/stable-diffusion-v1-3-original](https://huggingface.co/CompVis/stable-diffusion-v-1-3-original) to accept CLIP image embedding rather than text embeddings. This allows the creation of "image variations" similar to DALLE-2 using Stable Diffusion. This version of the weights has been ported to huggingface Diffusers, to use this with the Diffusers library requires the [Lambda Diffusers repo](https://github.com/LambdaLabsML/lambda-diffusers).
 
 ![](https://raw.githubusercontent.com/justinpinkney/stable-diffusion/main/assets/im-vars-thin.jpg)
 
 ## Example
 
-First clone [Lambda Diffusers](https://github.com/LambdaLabsML/lambda-diffusers) and install any requirements (in a virtual environment in the example below):
-
-```bash
-git clone https://github.com/LambdaLabsML/lambda-diffusers.git
-cd lambda-diffusers
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-```
-
-Then run the following python code:
+Make sure you are using a version of Diffusers >=0.8.0 (for older version see the old instructions at the bottom of this model card)
 
 ```python
-from pathlib import Path
-from lambda_diffusers import StableDiffusionImageEmbedPipeline
+from diffusers import StableDiffusionImageVariationPipeline
 from PIL import Image
-import torch
 
-device = "cuda" if torch.cuda.is_available() else "cpu"
-pipe = StableDiffusionImageEmbedPipeline.from_pretrained("lambdalabs/sd-image-variations-diffusers")
-pipe = pipe.to(device)
-
-im = Image.open("your/input/image/here.jpg")
-num_samples = 4
-image = pipe(num_samples*[im], guidance_scale=3.0)
-image = image["sample"]
-
-base_path = Path("outputs/im2im")
-base_path.mkdir(exist_ok=True, parents=True)
-for idx, im in enumerate(image):
-    im.save(base_path/f"{idx:06}.jpg")
+device = "cuda:0"
+sd_pipe = StableDiffusionImageVariationPipeline.from_pretrained("lambdalabs/sd-image-variations-diffusers")
+sd_pipe = sd_pipe.to(device)
+out = sd_pipe(image=Image.open("path/to/image.jpg"))
+out["images"][0].save("result.jpg")
 ```
-
 
 # Training
 
@@ -138,6 +119,50 @@ This checker works by checking model outputs against known hard-coded NSFW conce
 The concepts are intentionally hidden to reduce the likelihood of reverse-engineering this filter.
 Specifically, the checker compares the class probability of harmful concepts in the embedding space of the `CLIPModel` *after generation* of the images. 
 The concepts are passed into the model with the generated image and compared to a hand-engineered weight for each NSFW concept.
+
+
+## Old instructions
+
+If you are using a diffusers version <0.8.0 there is no `StableDiffusionImageVariationPipeline`, 
+in this case you need to use an older revision (`2ddbd90b14bc5892c19925b15185e561bc8e5d0a`) in conjunction with the lambda-diffusers repo:
+
+
+First clone [Lambda Diffusers](https://github.com/LambdaLabsML/lambda-diffusers) and install any requirements (in a virtual environment in the example below):
+
+```bash
+git clone https://github.com/LambdaLabsML/lambda-diffusers.git
+cd lambda-diffusers
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+Then run the following python code:
+
+```python
+from pathlib import Path
+from lambda_diffusers import StableDiffusionImageEmbedPipeline
+from PIL import Image
+import torch
+
+device = "cuda" if torch.cuda.is_available() else "cpu"
+pipe = StableDiffusionImageEmbedPipeline.from_pretrained(
+"lambdalabs/sd-image-variations-diffusers",
+revision="2ddbd90b14bc5892c19925b15185e561bc8e5d0a",
+)
+pipe = pipe.to(device)
+
+im = Image.open("your/input/image/here.jpg")
+num_samples = 4
+image = pipe(num_samples*[im], guidance_scale=3.0)
+image = image["sample"]
+
+base_path = Path("outputs/im2im")
+base_path.mkdir(exist_ok=True, parents=True)
+for idx, im in enumerate(image):
+    im.save(base_path/f"{idx:06}.jpg")
+```
+
 
 
 *This model card was written by: Justin Pinkney and is based on the [Stable Diffusion model card](https://huggingface.co/CompVis/stable-diffusion-v1-4).*
