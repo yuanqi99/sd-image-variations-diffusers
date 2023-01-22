@@ -1,8 +1,9 @@
 ---
-thumbnail: "https://repository-images.githubusercontent.com/523487884/fdb03a69-8353-4387-b5fc-0d85f888a63f"
+thumbnail: >-
+  https://repository-images.githubusercontent.com/523487884/fdb03a69-8353-4387-b5fc-0d85f888a63f
 datasets:
 - ChristophSchuhmann/improved_aesthetics_6plus
-license: creativeml-openrail-m
+license: openrail
 tags:
 - stable-diffusion
 - stable-diffusion-diffusers
