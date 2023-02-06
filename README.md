@@ -107,7 +107,7 @@ This model is fine tuned from Stable Diffusion v1-3 where the text encoder has b
   - **Learning rate:** warmup to 1e-5 for 5,000 steps and then kept constant
 
 
-Training was done using a [modified version of the original Stable Diffusion training code]((https://github.com/justinpinkney/stable-diffusion).
+Training was done using a [modified version of the original Stable Diffusion training code](https://github.com/justinpinkney/stable-diffusion).
 
 
 # Uses
