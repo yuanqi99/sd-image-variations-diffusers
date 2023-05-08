@@ -1,12 +1,20 @@
 ---
-thumbnail: "https://repository-images.githubusercontent.com/523487884/fdb03a69-8353-4387-b5fc-0d85f888a63f"
+thumbnail: >-
+  https://repository-images.githubusercontent.com/523487884/fdb03a69-8353-4387-b5fc-0d85f888a63f
 datasets:
 - ChristophSchuhmann/improved_aesthetics_6plus
+- gsdf/EasyNegative
 license: creativeml-openrail-m
 tags:
 - stable-diffusion
 - stable-diffusion-diffusers
 - image-to-image
+language:
+- en
+metrics:
+- character
+library_name: open_clip
+pipeline_tag: text-to-image
 ---
 
 # Stable Diffusion Image Variations Model Card
